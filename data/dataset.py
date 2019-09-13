@@ -11,8 +11,6 @@ import torchvision.transforms as T
 class DogCat(data.Dataset):
     def __init__(self, root, transforms=None, mode='train'):
         self.mode = mode
-
-        
         self.imgs = []
 
         # train: data/train/cat.10004.jpg
@@ -22,13 +20,24 @@ class DogCat(data.Dataset):
             self.imgs = [os.path.join(test_root, img) for img in os.listdir(test_root)]
             print(self.imgs)
             self.imgs = sorted(self.imgs, key=lambda x: int(x.split('.')[-2].split('/')[-1]))
-        else:
+
+        elif self.mode == 'train' or self.mode == 'val':
             train_root = root + 'data/train/'
             self.imgs = [os.path.join(train_root, img) for img in os.listdir(train_root)]
             self.imgs = sorted(self.imgs, key=lambda x: int(x.split('.')[-2]))
+            
 
         # img_nums: Number of images in dataset
         img_nums = len(self.imgs)
+        if self.mode == 'test':
+            pass
+            # self.imgs = self.imgs[int(0.8 * img_nums):]
+        elif self.mode == 'train':
+            self.imgs = self.imgs[:int(0.8 * img_nums)]
+        elif self.mode == 'val':
+            self.imgs = self.imgs[int(0.8 * img_nums):]
+        
+
 
         if transforms is None:
             normalize = T.Normalize(mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225])
