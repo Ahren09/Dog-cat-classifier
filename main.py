@@ -6,6 +6,7 @@ from data.dataset import DogCat
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 
+
 import ipdb
 # from torchnet import meter
 # from utils.visualize import Visualizer
@@ -13,7 +14,7 @@ import ipdb
 
 # Hyperparameters
 BATCH_SIZE = 64
-LR = 1e-3
+LR = 1e-4
 LR_DECAY = 0.5
 MAX_EPOCHS = 100
 ROOT = '/Users/jinyiqiao/Desktop/Git/DL/dogs-vs-cats-redux-kernels-edition/'
@@ -35,7 +36,7 @@ def train():
     val_dataloader = DataLoader(val_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
 
 
-    net = models.ResNet()
+    net = models.ResNet18()
     optimizer = torch.optim.Adam(net.parameters(), lr=LR)
 
     # Calculates training loss
@@ -46,7 +47,7 @@ def train():
     max_epoch = -1
     
     # Load pretrained network with greatest number of training epochs
-    pretrained_root = ROOT+'models/pretrained_'+MODEL_NAME+'/'
+    pretrained_root = ROOT+'models/pretrained_'+net.model_name+'/'
     if PRETRAINED and os.path.exists(pretrained_root):
         # model_list = [os.path.join(pretrained_root, model) for model in os.listdir(pretrained_root)]
         file_list = [file for file in os.listdir(pretrained_root) if file.endswith('.pth')]

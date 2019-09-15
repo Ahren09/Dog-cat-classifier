@@ -26,7 +26,7 @@ class ResidualBlock(nn.Module):
         return F.relu(out)
 
 
-class ResNet(BasicModule):
+class ResNet34(BasicModule):
     """
     实现主module：ResNet34
     ResNet34包含多个layer，每个layer又包含多个Residual block
@@ -34,18 +34,18 @@ class ResNet(BasicModule):
     """
 
     def __init__(self, num_classes=2):
-        super(ResNet, self).__init__()
-        self.model_name = 'resnet'
+        super(ResNet34, self).__init__()
+        self.model_name = 'resnet34'
 
         # 前几层: 图像转换
         self.pre = nn.Sequential(
             nn.Conv2d(3, 64, 7, 2, 3, bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
-            nn.MaxPool2d(3, 2, 1))
+            nn.MaxPool2d(kernel_size=3, stride=2, padding=1))
 
         # 重复的layer，分别有3，4，6，3个residual block
-        self.layer1 = self._make_layer(64, 128, 3)
+        self.layer1 = self._make_layer(64, 128, 3, stride=1)
         self.layer2 = self._make_layer(128, 256, 4, stride=2)
         self.layer3 = self._make_layer(256, 512, 6, stride=2)
         self.layer4 = self._make_layer(512, 512, 3, stride=2)
@@ -69,10 +69,14 @@ class ResNet(BasicModule):
         return nn.Sequential(*layers)
 
     def forward(self, x):
+        print("pre")
+        print(x.shape)
         x = self.pre(x)
         print("Layer1")
+        print(x.shape)
         x = self.layer1(x)
         print("Layer2")
+        print(x.shape)
         x = self.layer2(x)
         print("Layer3")
         x = self.layer3(x)
